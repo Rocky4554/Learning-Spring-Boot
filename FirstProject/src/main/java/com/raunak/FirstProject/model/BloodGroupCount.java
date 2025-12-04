@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 @Entity
 @Table(name = "blood_group_count")
 @Data
@@ -20,9 +19,13 @@ public class BloodGroupCount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String bloodGroup;
-
     private Long count;
-}
 
+    public BloodGroupCount(String bloodGroup, Long count) {
+        this.bloodGroup = bloodGroup;
+        this.count = count;
+    }
+}

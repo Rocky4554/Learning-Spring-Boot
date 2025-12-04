@@ -28,25 +28,25 @@ public class PatientController {
     PatientService object;
 
     // GET ALL Patients
-    @GetMapping("/products")
+    @GetMapping("/patients")
     public List<Patient> getProducts() {
         return object.getProducts();
     }
 
     // GET Patient by ID
-    @GetMapping("/products/{prodId}")
+    @GetMapping("/patient/{prodId}")
     public Patient getProductById(@PathVariable int prodId) {
         return object.getProductById(prodId);
 
     }
 
-    @GetMapping("/products/name/{name}")
+    @GetMapping("/patient/name/{name}")
     public Patient getProductsByName(@PathVariable String name) {
         return object.getProductsByName(name);
     }
 
     // ADD Single Patient
-    @PostMapping("/product")
+    @PostMapping("/patient")
     public String addProduct(@RequestBody Patient prod) {
         object.addProduct(prod);
         return "Product added successfully!";
@@ -60,14 +60,14 @@ public class PatientController {
     }
 
     // UPDATE Product
-    @PutMapping("/products/{prodId}")
+    @PutMapping("/patient/{prodId}")
     public String updateProduct(@PathVariable int prodId, @RequestBody Patient prod) {
         object.updateProduct(prodId, prod);
         return "Product updated successfully!";
     }
 
     // DELETE Product
-    @DeleteMapping("/products/{prodId}")
+    @DeleteMapping("/patient/{prodId}")
     public String deleteProduct(@PathVariable int prodId) {
         object.deleteProduct(prodId);
         return "Product deleted successfully!";
