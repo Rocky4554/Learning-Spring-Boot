@@ -4,6 +4,7 @@ import com.raunak.FirstProject.service.PatientService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raunak.FirstProject.DTO.PatientDTO;
+import com.raunak.FirstProject.DTOMapper.PatientMapper;
 import com.raunak.FirstProject.model.Patient;
 
 @RestController
@@ -28,15 +31,25 @@ public class PatientController {
     PatientService object;
 
     // GET ALL Patients
+    // @GetMapping("/patients")
+    // public List<Patient> getProducts() {
+    // return object.getProducts();
+    // }
+
     @GetMapping("/patients")
-    public List<Patient> getProducts() {
-        return object.getProducts();
+    public List<PatientDTO> getAllPatients() {
+        List<Patient> patients = object.getProducts(); // your service call
+        return patients.stream()
+                .map(PatientMapper::toPatientDTO)
+                .toList();
     }
 
     // GET Patient by ID
     @GetMapping("/patient/{prodId}")
-    public Patient getProductById(@PathVariable int prodId) {
-        return object.getProductById(prodId);
+    public ResponseEntity<PatientDTO> getProductById(@PathVariable int prodId) {
+        Patient patient = object.getProductById(prodId);
+        PatientDTO dto = PatientMapper.toPatientDTO(patient);
+        return ResponseEntity.ok(dto);
 
     }
 
@@ -73,7 +86,7 @@ public class PatientController {
         return "Product deleted successfully!";
     }
 
-      @DeleteMapping("/patients")
+    @DeleteMapping("/patients")
     public String deleteAllPatients() {
         object.deleteAllPatients();
         return "All patients deleted successfully!";

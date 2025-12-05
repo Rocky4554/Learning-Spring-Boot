@@ -25,14 +25,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 @Data
 @AllArgsConstructor
-@Entity
 @NoArgsConstructor
-@ToString
-@Getter
-@Setter
+@Entity
+@ToString(exclude = {"insurance", "appointments"})   // <-- FIXED
 @Table(
     name="patient",
     uniqueConstraints = {
@@ -61,7 +58,6 @@ public class Patient {
 
     private LocalDate dateofBirth;
 
-    @ToString.Exclude
     private String gender;
 
     private String bloodGroup;  
@@ -70,10 +66,15 @@ public class Patient {
     @Column(updatable=false)
     private LocalDateTime createdAt;
 
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="patient_insurance_id")
     private Insurance insurance;
 
-    @OneToMany(mappedBy="patient" ,cascade = {CascadeType.REMOVE},orphanRemoval = true) // means if a child is orphan no parent delete automatically  from the parent 
+    @OneToMany(
+        mappedBy = "patient",
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
+    )
     private List<Appointments> appointments = new ArrayList<>();
 }

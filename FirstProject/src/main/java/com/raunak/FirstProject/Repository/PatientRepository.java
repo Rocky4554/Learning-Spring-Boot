@@ -18,4 +18,17 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query("SELECT new com.raunak.FirstProject.model.BloodGroupCount(p.bloodGroup, COUNT(p)) " +
            "FROM Patient p GROUP BY p.bloodGroup")
     List<BloodGroupCount> countPatientsByBloodGroup(Pageable pageable);
+
+    // @Query("SELECT p FROM Patient p LEFT JOIN FETCH p.appointments")
+    // List<Patient> findAllPatientWihtAppoitment();
+
+       @Query(value = """
+            SELECT *
+            FROM patient p
+            LEFT JOIN appointments a
+            ON p.id = a.patient_id
+            """,
+            nativeQuery = true)
+    List<Patient> findAllPatientWihtAppoitment();
 }
+

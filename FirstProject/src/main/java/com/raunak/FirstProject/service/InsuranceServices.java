@@ -31,4 +31,12 @@ public class InsuranceServices {
         return patient; 
     }
 
+    @Transactional
+    public Patient disconnectInsuranceFromPatient(Long patientid){
+        Patient patient = patientRepository.findById(patientid).orElseThrow(()-> new EntityNotFoundException("patient not found"));
+        patient.setInsurance(null);
+
+        return patient;
+    }
+
 }

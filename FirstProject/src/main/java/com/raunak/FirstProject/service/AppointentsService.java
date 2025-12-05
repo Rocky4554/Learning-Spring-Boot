@@ -13,9 +13,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+
 @Service
 @RequiredArgsConstructor
-
 
 public class AppointentsService {
 
@@ -23,7 +23,7 @@ public class AppointentsService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
     @Transactional
-    public void createNewAppointment(Appointments appointments , Long doctorid , Long patientid){
+    public Appointments createNewAppointment(Appointments appointments , Long doctorid , Long patientid){
         Doctor doctor = doctorRepository.findById(doctorid).orElseThrow(()-> new EntityNotFoundException("Doctor not found with id"+doctorid));
         Patient patient = patientRepository.findById(patientid).orElseThrow(()-> new EntityNotFoundException("Patient not found with id"+patientid));
 
@@ -34,6 +34,8 @@ public class AppointentsService {
 
         patient.getAppointments().add(appointments);
 
+        return appointmentRepository.save(appointments);
+ 
     }
 
 }

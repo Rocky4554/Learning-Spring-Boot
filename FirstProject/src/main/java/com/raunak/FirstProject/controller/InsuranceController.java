@@ -26,4 +26,13 @@ public class InsuranceController {
 
         return ResponseEntity.ok(updatedPatient);
     }
+
+    // Disconnect insurance from patient
+    @DeleteMapping("/disconnect/{patientId}")
+    public ResponseEntity<String> disconnectInsurance(@PathVariable Long patientId) {
+
+        insuranceServices.disconnectInsuranceFromPatient(patientId);
+
+        return ResponseEntity.ok("Insurance removed from patient with ID " + patientId);
+    }
 }
