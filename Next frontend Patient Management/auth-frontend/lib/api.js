@@ -4,18 +4,26 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8
 export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
+    CREATE_PATIENT: `${API_BASE_URL}/api/patient`,
+    GET_PATIENT_DETAILS: (id) => `${API_BASE_URL}/api/patient/${id}`,
 };
 
 // API client with error handling
 export async function apiCall(endpoint, options = {}) {
     try {
-        const response = await fetch(endpoint, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
+        const headers = {
+            'Content-Type': 'application/json',
+            ...(options.headers || {}),
+        };
+
+        const config = {
             ...options,
-        });
+            headers,
+        };
+
+        console.log(`Making API call to: ${endpoint}`, config);
+
+        const response = await fetch(endpoint, config);
 
         const data = await response.json();
 

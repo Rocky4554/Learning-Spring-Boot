@@ -26,12 +26,12 @@ public class PatientService {
                 .orElse(new Patient());
     }
 
-    public void addProduct(Patient prod) {
-        repository.save(prod);
+    public Patient addProduct(Patient prod) {
+       return repository.save(prod);
     }
 
-    public void saveALL(List<Patient> patients) {
-        repository.saveAll(patients);
+    public List<Patient> saveALL(List<Patient> patients) {
+       return repository.saveAll(patients);
     }
 
     public void updateProduct(int prodId, Patient updatedProduct) {

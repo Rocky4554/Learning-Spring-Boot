@@ -4,6 +4,7 @@ import com.raunak.FirstProject.service.PatientService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raunak.FirstProject.DTO.ApiResponseDTO;
 import com.raunak.FirstProject.DTO.PatientDTO;
 import com.raunak.FirstProject.DTOMapper.PatientMapper;
 import com.raunak.FirstProject.model.Patient;
@@ -59,11 +61,39 @@ public class PatientController {
     }
 
     // ADD Single Patient
-    @PostMapping("/patient")
-    public String addProduct(@RequestBody Patient prod) {
-        object.addProduct(prod);
-        return "Product added successfully!";
+    // @PostMapping("/patient")
+    // public String addProduct(@RequestBody Patient prod) {
+    //     object.addProduct(prod);
+    //     return "Patient added successfully!";
+    // }
+
+@PostMapping("/patient")
+public ResponseEntity<ApiResponseDTO<Patient>> addPatient(@RequestBody Patient prod) {
+    try {
+        Patient savedPatient = object.addProduct(prod);
+
+        ApiResponseDTO<Patient> response = new ApiResponseDTO<>(
+                true,
+                "Patient added successfully!",
+                savedPatient,
+                HttpStatus.OK.value()
+        );
+
+        return ResponseEntity.ok(response);
+
+    } catch (Exception e) {
+        ApiResponseDTO<Patient> errorResponse = new ApiResponseDTO<>(
+                false,
+                "Failed to add patient: " + e.getMessage(),
+                null,
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
     }
+}
+
 
     // ADD Multiple Patients
     @PostMapping("/patients")

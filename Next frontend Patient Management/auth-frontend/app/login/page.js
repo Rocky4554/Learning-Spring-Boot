@@ -10,7 +10,7 @@ export default function LoginPage() {
     const handleLogin = async (username, password) => {
         const result = await login(username, password);
         if (result.success) {
-            router.push('/home');
+            router.push('/onboarding');
         }
         return result;
     };

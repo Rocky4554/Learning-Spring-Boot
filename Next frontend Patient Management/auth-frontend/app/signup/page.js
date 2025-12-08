@@ -10,7 +10,7 @@ export default function SignupPage() {
     const handleSignup = async (username, password) => {
         const result = await signup(username, password);
         if (result.success) {
-            router.push('/home');
+            router.push('/onboarding');
         }
         return result;
     };
