@@ -5,7 +5,7 @@ export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
     CREATE_PATIENT: `${API_BASE_URL}/api/patient`,
-    GET_PATIENT_DETAILS: (id) => `${API_BASE_URL}/api/patient/${id}`,
+    GET_PATIENT_DETAILS: (username) => `${API_BASE_URL}/api/patient/email?email=${encodeURIComponent(username)}`,
 };
 
 // API client with error handling

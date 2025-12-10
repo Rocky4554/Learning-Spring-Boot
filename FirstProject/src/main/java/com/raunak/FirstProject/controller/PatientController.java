@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raunak.FirstProject.DTO.ApiResponseDTO;
@@ -55,45 +56,42 @@ public class PatientController {
 
     }
 
-    @GetMapping("/patient/name/{name}")
-    public Patient getProductsByName(@PathVariable String name) {
-        return object.getProductsByName(name);
+    @GetMapping("/patient/email")
+    public Patient getProductsByEmail(@RequestParam String email) {
+        return object.getProductsByEmail(email);
     }
 
     // ADD Single Patient
     // @PostMapping("/patient")
     // public String addProduct(@RequestBody Patient prod) {
-    //     object.addProduct(prod);
-    //     return "Patient added successfully!";
+    // object.addProduct(prod);
+    // return "Patient added successfully!";
     // }
 
-@PostMapping("/patient")
-public ResponseEntity<ApiResponseDTO<Patient>> addPatient(@RequestBody Patient prod) {
-    try {
-        Patient savedPatient = object.addProduct(prod);
+    @PostMapping("/patient")
+    public ResponseEntity<ApiResponseDTO<Patient>> addPatient(@RequestBody Patient prod) {
+        try {
+            Patient savedPatient = object.addProduct(prod);
 
-        ApiResponseDTO<Patient> response = new ApiResponseDTO<>(
-                true,
-                "Patient added successfully!",
-                savedPatient,
-                HttpStatus.OK.value()
-        );
+            ApiResponseDTO<Patient> response = new ApiResponseDTO<>(
+                    true,
+                    "Patient added successfully!",
+                    savedPatient,
+                    HttpStatus.OK.value());
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
 
-    } catch (Exception e) {
-        ApiResponseDTO<Patient> errorResponse = new ApiResponseDTO<>(
-                false,
-                "Failed to add patient: " + e.getMessage(),
-                null,
-                HttpStatus.INTERNAL_SERVER_ERROR.value()
-        );
+        } catch (Exception e) {
+            ApiResponseDTO<Patient> errorResponse = new ApiResponseDTO<>(
+                    false,
+                    "Failed to add patient: " + e.getMessage(),
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
+        }
     }
-}
-
 
     // ADD Multiple Patients
     @PostMapping("/patients")

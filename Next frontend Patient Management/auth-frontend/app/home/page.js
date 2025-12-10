@@ -20,20 +20,24 @@ export default function HomePage() {
         }
 
         const userData = getUser();
+
+        console.log("FULL USER DATA:", userData);
+        console.log("USER ID (sub):", userData?.username);
+
         if (userData) {
             setUser(userData);
-            fetchPatientDetails(userData.userId); // Assuming userId maps to patientId for now, or we fetch by user
+            fetchPatientDetails(userData.username); // Fetching by username as requested
         } else {
             setLoading(false);
         }
     }, [router]);
 
-    const fetchPatientDetails = async (userId) => {
+    const fetchPatientDetails = async (username) => {
         try {
             const token = getToken();
             // Adjust endpoint logic: typically GET /api/patients/{id} or /api/patients/me
-            // Using the user-specified GET http://localhost:8080/api/patient/{id}
-            const result = await apiCall(API_ENDPOINTS.GET_PATIENT_DETAILS(userId), {
+            // Using the user-specified GET http://localhost:8080/api/patient/{username}
+            const result = await apiCall(API_ENDPOINTS.GET_PATIENT_DETAILS(username), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -72,11 +76,11 @@ export default function HomePage() {
                 <header className="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 gap-4">
                     <div className="flex items-center gap-4 w-full md:w-auto">
                         <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-blue-500 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                            {patient?.name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || 'U'}
+                            {user?.username?.[0]?.toUpperCase() || 'U'}
                         </div>
                         <div>
                             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                                {patient ? `Welcome, ${patient.name}` : `Welcome, ${user?.username}`}
+                                Welcome, {user?.username || 'User'}
                             </h1>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                 Patient ID: {patient?.id || user?.userId} • {patient?.bloodGroup || 'N/A'}

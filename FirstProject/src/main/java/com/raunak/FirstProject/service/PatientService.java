@@ -17,8 +17,8 @@ public class PatientService {
         return repository.findAll();
     }
 
-    public Patient getProductsByName(String name) {
-        return repository.findByName(name);
+    public Patient getProductsByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     public Patient getProductById(int prodId) {

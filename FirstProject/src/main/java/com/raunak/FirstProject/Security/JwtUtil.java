@@ -7,6 +7,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.raunak.FirstProject.model.User;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,7 +51,11 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+           //  userDetails has no getId()
+    // ✔ But the actual object is your User class
+          User user = (User) userDetails;
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId()); 
         return createToken(claims, userDetails.getUsername());
     }
 
