@@ -2,6 +2,8 @@ package com.raunak.FirstProject.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +36,8 @@ public class Appointments {
 
     @Column(length=1000)
     private String reason;
-
+    
+    @JsonIgnore
     @JoinColumn(name="patient_id", nullable=false) // it is owning the side of relationship, patient is required and not nullbale 
     @ManyToOne // readmme it as many apointments is related to one patient ,no more than one patient can be assoicated with one appointment
     private Patient patient;

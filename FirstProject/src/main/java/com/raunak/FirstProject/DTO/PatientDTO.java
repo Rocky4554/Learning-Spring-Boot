@@ -15,6 +15,7 @@ public class PatientDTO {
     private String gender;
     private String bloodGroup;
     private LocalDateTime createdAt;
+    private String location;
 
     private InsuranceDTO insurance; 
     private List<AppointmentDTO> appointments;

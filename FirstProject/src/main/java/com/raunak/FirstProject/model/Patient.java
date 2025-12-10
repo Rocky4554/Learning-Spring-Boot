@@ -6,30 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+
+import lombok.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString(exclude = {"insurance", "appointments"})   // <-- FIXED
 @Table(
     name="patient",
     uniqueConstraints = {
@@ -39,8 +25,8 @@ import lombok.ToString;
         )
     },
     indexes={
-        @jakarta.persistence.Index(
-            name="index_name_email",    
+        @Index(
+            name="index_name_email",
             columnList = "patient_name,email"
         )
     }
@@ -55,21 +41,21 @@ public class Patient {
     private String name;
 
     private String email;
-
     private LocalDate dateofBirth;
-
     private String gender;
-
-    private String bloodGroup;  
+    private String bloodGroup;
+    private String location;
 
     @CreationTimestamp
     @Column(updatable=false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore  
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="patient_insurance_id")
     private Insurance insurance;
 
+    @JsonIgnore  
     @OneToMany(
         mappedBy = "patient",
         cascade = CascadeType.REMOVE,

@@ -10,22 +10,5 @@
       "specialization": "Dermatologist",
       "email": "priya.mehta@hospital.com"
     }
-  ],
-
-  "patients": [
-    {
-      "name": "Rahul Kumar",
-      "email": "rahul@gmail.com",
-      "dateofBirth": "1998-04-21",
-      "gender": "Male",
-      "bloodGroup": "A+"
-    },
-    {
-      "name": "Anjali Singh",
-      "email": "anjali@gmail.com",
-      "dateofBirth": "2000-01-10",
-      "gender": "Female",
-      "bloodGroup": "B+"
-    }
   ]
 }

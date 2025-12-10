@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,7 +42,8 @@ public class Insurance {
     @CreationTimestamp // cretae timesatamp autmatically
     @Column(updatable=false, nullable=false) // udatable false means once set cannot be changed
     private LocalDateTime createdAt;
-    
+
+     @JsonIgnore 
     @OneToOne(mappedBy="insurance")
      private Patient patient;
  

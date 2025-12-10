@@ -68,21 +68,49 @@ public class PatientController {
     // return "Patient added successfully!";
     // }
 
-    @PostMapping("/patient")
-    public ResponseEntity<ApiResponseDTO<Patient>> addPatient(@RequestBody Patient prod) {
-        try {
-            Patient savedPatient = object.addProduct(prod);
+    // @PostMapping("/patient")
+    // public ResponseEntity<ApiResponseDTO<Patient>> addPatient(@RequestBody
+    // Patient prod) {
+    // try {
+    // Patient savedPatient = object.addProduct(prod);
 
-            ApiResponseDTO<Patient> response = new ApiResponseDTO<>(
+    // ApiResponseDTO<Patient> response = new ApiResponseDTO<>(
+    // true,
+    // "Patient added successfully!",
+    // savedPatient,
+    // HttpStatus.OK.value());
+
+    // return ResponseEntity.ok(response);
+
+    // } catch (Exception e) {
+    // ApiResponseDTO<Patient> errorResponse = new ApiResponseDTO<>(
+    // false,
+    // "Failed to add patient: " + e.getMessage(),
+    // null,
+    // HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+    // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    // .body(errorResponse);
+    // }
+    // }
+
+    @PostMapping("/patient")
+    public ResponseEntity<ApiResponseDTO<PatientDTO>> addPatient(@RequestBody Patient prod) {
+        try {
+            Patient savedPatient = object.addProduct(prod); // save
+            PatientDTO dto = PatientMapper.toPatientDTO(savedPatient); // convert to DTO
+
+            ApiResponseDTO<PatientDTO> response = new ApiResponseDTO<>(
                     true,
                     "Patient added successfully!",
-                    savedPatient,
+                    dto,
                     HttpStatus.OK.value());
 
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            ApiResponseDTO<Patient> errorResponse = new ApiResponseDTO<>(
+
+            ApiResponseDTO<PatientDTO> errorResponse = new ApiResponseDTO<>(
                     false,
                     "Failed to add patient: " + e.getMessage(),
                     null,
@@ -95,28 +123,63 @@ public class PatientController {
 
     // ADD Multiple Patients
     @PostMapping("/patients")
-    public String addPatients(@RequestBody List<Patient> patients) {
-        object.saveALL(patients);
-        return "Patients list added successfully!";
+    public ResponseEntity<ApiResponseDTO<List<PatientDTO>>> addPatients(@RequestBody List<Patient> patients) {
+        try {
+            List<Patient> saved = object.saveALL(patients);
+            List<PatientDTO> dtoList = saved.stream().map(PatientMapper::toPatientDTO).toList();
+            ApiResponseDTO<List<PatientDTO>> response = new ApiResponseDTO<>(true, "Patients list added successfully!",
+                    dtoList, HttpStatus.OK.value());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponseDTO<List<PatientDTO>> error = new ApiResponseDTO<>(false,
+                    "Failed to add patients: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     // UPDATE Product
     @PutMapping("/patient/{prodId}")
-    public String updateProduct(@PathVariable int prodId, @RequestBody Patient prod) {
-        object.updateProduct(prodId, prod);
-        return "Product updated successfully!";
+    public ResponseEntity<ApiResponseDTO<PatientDTO>> updateProduct(@PathVariable int prodId,
+            @RequestBody Patient prod) {
+        try {
+            object.updateProduct(prodId, prod);
+            PatientDTO dto = PatientMapper.toPatientDTO(prod);
+            ApiResponseDTO<PatientDTO> response = new ApiResponseDTO<>(true, "Product updated successfully!", dto,
+                    HttpStatus.OK.value());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponseDTO<PatientDTO> error = new ApiResponseDTO<>(false,
+                    "Failed to update patient: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     // DELETE Product
     @DeleteMapping("/patient/{prodId}")
-    public String deleteProduct(@PathVariable int prodId) {
-        object.deleteProduct(prodId);
-        return "Product deleted successfully!";
+    public ResponseEntity<ApiResponseDTO<Void>> deleteProduct(@PathVariable int prodId) {
+        try {
+            object.deleteProduct(prodId);
+            ApiResponseDTO<Void> response = new ApiResponseDTO<>(true, "Product deleted successfully!", null,
+                    HttpStatus.OK.value());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponseDTO<Void> error = new ApiResponseDTO<>(false, "Failed to delete patient: " + e.getMessage(),
+                    null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     @DeleteMapping("/patients")
-    public String deleteAllPatients() {
-        object.deleteAllPatients();
-        return "All patients deleted successfully!";
+    public ResponseEntity<ApiResponseDTO<Void>> deleteAllPatients() {
+        try {
+            object.deleteAllPatients();
+            ApiResponseDTO<Void> response = new ApiResponseDTO<>(true, "All patients deleted successfully!", null,
+                    HttpStatus.OK.value());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponseDTO<Void> error = new ApiResponseDTO<>(false, "Failed to delete patients: " + e.getMessage(),
+                    null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 }

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
 import { login } from '@/lib/auth';
+import { API_ENDPOINTS, apiCall } from '@/lib/api';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -10,7 +11,23 @@ export default function LoginPage() {
     const handleLogin = async (username, password) => {
         const result = await login(username, password);
         if (result.success) {
-            router.push('/onboarding');
+            // Check if patient profile exists
+            try {
+                // Using username as email/id for lookup as per API structure
+                const patientCheck = await apiCall(API_ENDPOINTS.GET_PATIENT_DETAILS(username), {
+                    headers: { 'Authorization': `Bearer ${result.data.jwt}` }
+                });
+
+                if (patientCheck.success && patientCheck.data) {
+                    router.push('/home');
+                } else {
+                    router.push('/onboarding');
+                }
+            } catch (error) {
+                console.error("Error checking patient profile:", error);
+                // Fallback to onboarding if check fails
+                router.push('/onboarding');
+            }
         }
         return result;
     };

@@ -15,7 +15,9 @@ export default function OnboardingPage() {
         email: '',
         dateofBirth: '',
         gender: 'Male',
+        gender: 'Male',
         bloodGroup: 'O+',
+        city: '',
     });
 
     // ⚠️ Final fix: Hard reset the form on mount
@@ -28,6 +30,7 @@ export default function OnboardingPage() {
             dateofBirth: '',
             gender: 'Male',
             bloodGroup: 'O+',
+            city: '',
         });
     }, []);
 
@@ -161,6 +164,18 @@ export default function OnboardingPage() {
                                 <option value="AB+">AB+</option>
                                 <option value="AB-">AB-</option>
                             </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">City</label>
+                            <input
+                                name="city"
+                                value={formData.city}
+                                onChange={handleChange}
+                                className="input"
+                                required
+                                placeholder="Enter your city"
+                            />
                         </div>
 
                     </div>

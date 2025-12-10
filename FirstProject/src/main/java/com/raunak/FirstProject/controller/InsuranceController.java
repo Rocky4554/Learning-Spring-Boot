@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.raunak.FirstProject.model.Insurance;
 import com.raunak.FirstProject.model.Patient;
-import com.raunak.FirstProject.service.InsuranceServices;
+import com.raunak.FirstProject.service.InsuranceService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InsuranceController {
 
-    private final InsuranceServices insuranceServices;
+    private final InsuranceService insuranceService;
 
     // Assign insurance to patient
     @PostMapping("/assign/{patientId}")
@@ -22,7 +22,7 @@ public class InsuranceController {
             @PathVariable Long patientId,
             @RequestBody Insurance insurance) {
 
-        Patient updatedPatient = insuranceServices.assignInsurnaceToPatient(insurance, patientId);
+        Patient updatedPatient = insuranceService.assignInsuranceToPatient(insurance, patientId);
 
         return ResponseEntity.ok(updatedPatient);
     }
@@ -31,7 +31,7 @@ public class InsuranceController {
     @DeleteMapping("/disconnect/{patientId}")
     public ResponseEntity<String> disconnectInsurance(@PathVariable Long patientId) {
 
-        insuranceServices.disconnectInsuranceFromPatient(patientId);
+        insuranceService.disconnectInsuranceFromPatient(patientId);
 
         return ResponseEntity.ok("Insurance removed from patient with ID " + patientId);
     }

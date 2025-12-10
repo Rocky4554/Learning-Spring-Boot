@@ -1,5 +1,8 @@
 package com.raunak.FirstProject.DTO;
 
+import lombok.Data;
+
+@Data  // ADD THIS ANNOTATION
 public class ApiResponseDTO<T> {        
     private boolean success;
     private String message;
@@ -18,7 +21,4 @@ public class ApiResponseDTO<T> {
     public ApiResponseDTO(boolean success, String message, int status) {
         this(success, message, null, status);
     }
-
-    // getters and setters
 }
-
