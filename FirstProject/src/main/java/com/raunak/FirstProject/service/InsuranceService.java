@@ -7,17 +7,18 @@ import com.raunak.FirstProject.Repository.PatientRepository;
 import com.raunak.FirstProject.model.Insurance;
 import com.raunak.FirstProject.model.Patient;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
-
 public class InsuranceService {
 
     private final InsuranceRepository insuranceRepository;
     private final PatientRepository patientRepository;
+
+    private final NotificationService notificationService;
 
     @Transactional
     public Patient assignInsuranceToPatient(Insurance insurance, Long patientid) {
@@ -25,13 +26,21 @@ public class InsuranceService {
         Patient patient = patientRepository.findById(patientid)
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found with id " + patientid));
 
+        // SET RELATIONS
         patient.setInsurance(insurance);
         insurance.setPatient(patient);
 
-        // persist changes
+        // SAVE
         patientRepository.save(patient);
 
-        return patientRepository.findById(patientid).orElse(patient);
+        // 🔥 Send async email to patient
+        notificationService.sendInsuranceAddedNotification(
+                patient.getEmail(),
+                patient.getName()
+        );
+
+        // Return updated patient
+        return patient;
     }
 
     @Transactional
@@ -39,10 +48,7 @@ public class InsuranceService {
         Patient patient = patientRepository.findById(patientid)
                 .orElseThrow(() -> new EntityNotFoundException("patient not found"));
         patient.setInsurance(null);
-
-        // persist changes
         patientRepository.save(patient);
-
         return patient;
     }
 
@@ -51,4 +57,8 @@ public class InsuranceService {
         return insuranceRepository.save(insurance);
     }
 
+    public Patient findPatientWithInsurance(Long patientId) {
+        return patientRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found"));
+    }
 }

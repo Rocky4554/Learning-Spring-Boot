@@ -67,7 +67,7 @@ public class WebSecurityConfig {
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setAllowCredentials(false); // Set to false when using wildcard origins
                 configuration.setMaxAge(3600L);
-                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", configuration);
                 return source;
         }

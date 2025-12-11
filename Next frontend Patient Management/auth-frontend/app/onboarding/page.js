@@ -15,9 +15,8 @@ export default function OnboardingPage() {
         email: '',
         dateofBirth: '',
         gender: 'Male',
-        gender: 'Male',
         bloodGroup: 'O+',
-        city: '',
+        location: '',
     });
 
     // ⚠️ Final fix: Hard reset the form on mount
@@ -30,7 +29,7 @@ export default function OnboardingPage() {
             dateofBirth: '',
             gender: 'Male',
             bloodGroup: 'O+',
-            city: '',
+            location: '',
         });
     }, []);
 
@@ -49,13 +48,19 @@ export default function OnboardingPage() {
             if (!token) throw new Error('Not authenticated');
 
             // Validation
-            if (!formData.name || !formData.email || !formData.dateofBirth) {
-                throw new Error('All fields are required');
+            if (!formData.name || !formData.email || !formData.dateofBirth || !formData.location || formData.location.trim() === '') {
+                throw new Error('All fields are required, including Location');
             }
 
             const payload = { ...formData };
 
             console.log('Sending onboarding data to backend:', payload);
+            console.log('Explicitly checking City field:', payload.city);
+
+            // Check for empty city
+            if (!payload.city || payload.city.trim() === '') {
+                console.warn("WARNING: City/Location field is empty!");
+            }
 
             const result = await apiCall(API_ENDPOINTS.CREATE_PATIENT, {
                 method: 'POST',
@@ -167,14 +172,14 @@ export default function OnboardingPage() {
                         </div>
 
                         <div className="form-group">
-                            <label className="form-label">City</label>
+                            <label className="form-label">Location</label>
                             <input
-                                name="city"
-                                value={formData.city}
+                                name="location"
+                                value={formData.location}
                                 onChange={handleChange}
                                 className="input"
                                 required
-                                placeholder="Enter your city"
+                                placeholder="Enter your city/location"
                             />
                         </div>
 
