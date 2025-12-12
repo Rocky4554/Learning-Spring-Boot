@@ -1,10 +1,16 @@
 package com.raunak.FirstProject.service;
 
 import com.raunak.FirstProject.Repository.PatientRepository;
+import com.raunak.FirstProject.Repository.InsuranceRepository;
 import com.raunak.FirstProject.model.Insurance;
 import com.raunak.FirstProject.model.Patient;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +23,9 @@ public class PatientService {
 
     @Autowired
     InsuranceService insuranceService;
+
+    @Autowired
+    InsuranceRepository insuranceRepository;
 
     public List<Patient> getProducts() {
         return repository.findAll();
@@ -68,4 +77,10 @@ public class PatientService {
     public void deleteAllPatients() {
         repository.deleteAll();
     }
+
+    // -----------------------------------
+// REMOVE ALL INSURANCES FROM A PATIENT
+// -----------------------------------
+
+
 }

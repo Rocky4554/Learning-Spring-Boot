@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
-
 import lombok.*;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Table(
     name="patient",
     uniqueConstraints = {
@@ -50,12 +50,17 @@ public class Patient {
     @Column(updatable=false)
     private LocalDateTime createdAt;
 
-    @JsonIgnore  
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="patient_insurance_id")
-    private Insurance insurance;
+    // ⇩⇩ THIS IS CORRECT — WILL GENERATE getInsurances()
+    @JsonIgnore
+    @OneToMany(
+        mappedBy = "patient",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<Insurance> insurances = new ArrayList<>();
 
-    @JsonIgnore  
+    // ⇩⇩ THIS IS CORRECT — WILL GENERATE getAppointments()
+    @JsonIgnore
     @OneToMany(
         mappedBy = "patient",
         cascade = CascadeType.REMOVE,

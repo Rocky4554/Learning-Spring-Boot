@@ -17,6 +17,8 @@ public class PatientDTO {
     private LocalDateTime createdAt;
     private String location;
 
-    private InsuranceDTO insurance; 
+    // CHANGED: single insurance → list of insurances
+    private List<InsuranceDTO> insurances;
+
     private List<AppointmentDTO> appointments;
 }

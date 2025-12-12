@@ -145,7 +145,7 @@ public class PatientController {
             object.updateProduct(prodId, prod);
             PatientDTO dto = PatientMapper.toPatientDTO(prod);
             ApiResponseDTO<PatientDTO> response = new ApiResponseDTO<>(true, "Product updated successfully!", dto,
-                    HttpStatus.OK.value());
+                    HttpStatus.OK.value());    
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             ApiResponseDTO<PatientDTO> error = new ApiResponseDTO<>(false,

@@ -6,45 +6,35 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-
 public class Insurance {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // automatically increemnt generated id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false,unique=true,length=100)
+    @Column(nullable = false, unique = true, length = 100)
     private String policyNumber;
 
-    @Column(nullable=false , length=100)
+    @Column(nullable = false, length = 100)
     private String provider;
 
     private LocalDate validUntill;
 
-    @CreationTimestamp // cretae timesatamp autmatically
-    @Column(updatable=false, nullable=false) // udatable false means once set cannot be changed
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-     @JsonIgnore 
-    @OneToOne(mappedBy="insurance")
-     private Patient patient;
- 
+    // Many insurances → One patient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
+    @JsonIgnore
+    private Patient patient;
 }

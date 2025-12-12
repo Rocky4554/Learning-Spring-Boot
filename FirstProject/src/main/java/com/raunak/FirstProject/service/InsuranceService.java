@@ -17,48 +17,86 @@ public class InsuranceService {
 
     private final InsuranceRepository insuranceRepository;
     private final PatientRepository patientRepository;
-
     private final NotificationService notificationService;
 
+    // -------------------------
+    // ADD INSURANCE TO PATIENT
+    // -------------------------
     @Transactional
-    public Patient assignInsuranceToPatient(Insurance insurance, Long patientid) {
+    public Patient assignInsuranceToPatient(Insurance insurance, Long patientId) {
 
-        Patient patient = patientRepository.findById(patientid)
-                .orElseThrow(() -> new EntityNotFoundException("Patient not found with id " + patientid));
+        Patient patient = patientRepository.findById(patientId)
+            .orElseThrow(() -> new EntityNotFoundException("Patient not found with id " + patientId));
 
-        // SET RELATIONS
-        patient.setInsurance(insurance);
+        // link
         insurance.setPatient(patient);
+        patient.getInsurances().add(insurance);
 
-        // SAVE
-        patientRepository.save(patient);
+        // Save insurance only (patient auto-updated)
+        insuranceRepository.save(insurance);
 
-        // 🔥 Send async email to patient
+        // Send async email
         notificationService.sendInsuranceAddedNotification(
-                patient.getEmail(),
-                patient.getName()
+                patient.getEmail(), 
+                insurance.getPolicyNumber()
         );
 
-        // Return updated patient
         return patient;
     }
 
+    // -----------------------------------
+    // REMOVE SPECIFIC INSURANCE FROM PATIENT
+    // -----------------------------------
     @Transactional
-    public Patient disconnectInsuranceFromPatient(Long patientid) {
-        Patient patient = patientRepository.findById(patientid)
-                .orElseThrow(() -> new EntityNotFoundException("patient not found"));
-        patient.setInsurance(null);
-        patientRepository.save(patient);
+    public Patient disconnectInsuranceFromPatient(Long patientId, Long insuranceId) {
+
+        Patient patient = patientRepository.findById(patientId)
+            .orElseThrow(() -> new EntityNotFoundException("Patient not found"));
+
+        Insurance insurance = insuranceRepository.findById(insuranceId)
+            .orElseThrow(() -> new EntityNotFoundException("Insurance not found"));
+
+        if (!insurance.getPatient().getId().equals(patientId)) {
+            throw new IllegalStateException("This insurance does not belong to this patient");
+        }
+
+        // unlink both sides
+        patient.getInsurances().remove(insurance);
+        insurance.setPatient(null);
+
+        insuranceRepository.delete(insurance);
+
         return patient;
     }
 
+    // Simple create insurance
     @Transactional
     public Insurance createInsurance(Insurance insurance) {
         return insuranceRepository.save(insurance);
     }
 
+    // Load patient with all insurances
     public Patient findPatientWithInsurance(Long patientId) {
         return patientRepository.findById(patientId)
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found"));
     }
+
+    @Transactional
+public Patient disconnectAllInsurances(Long patientId) {
+
+    Patient patient = patientRepository.findById(patientId)
+            .orElseThrow(() -> new EntityNotFoundException("Patient not found"));
+
+    // delete each insurance
+    for (Insurance insurance : patient.getInsurances()) {
+        insurance.setPatient(null);
+        insuranceRepository.delete(insurance);  // <-- FIXED
+    }
+
+    patient.getInsurances().clear();
+
+    return patient;
 }
+
+}
+

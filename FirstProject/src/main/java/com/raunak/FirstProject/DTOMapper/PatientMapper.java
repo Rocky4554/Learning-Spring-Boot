@@ -5,10 +5,11 @@ import java.util.stream.Collectors;
 import com.raunak.FirstProject.DTO.*;
 import com.raunak.FirstProject.model.*;
 
-
 public class PatientMapper {
 
     public static PatientDTO toPatientDTO(Patient patient) {
+        if (patient == null) return null;
+
         PatientDTO dto = new PatientDTO();
 
         dto.setId(patient.getId());
@@ -19,12 +20,16 @@ public class PatientMapper {
         dto.setBloodGroup(patient.getBloodGroup());
         dto.setCreatedAt(patient.getCreatedAt());
 
-        // Insurance
-        if (patient.getInsurance() != null) {
-            dto.setInsurance(toInsuranceDTO(patient.getInsurance()));
+        // map Insurances (ONE-to-MANY)
+        if (patient.getInsurances() != null) {
+            dto.setInsurances(
+                patient.getInsurances().stream()
+                    .map(PatientMapper::toInsuranceDTO)
+                    .collect(Collectors.toList())
+            );
         }
 
-        // Appointments
+        // map Appointments (ONE-to-MANY)
         if (patient.getAppointments() != null) {
             dto.setAppointments(
                 patient.getAppointments().stream()
@@ -37,6 +42,7 @@ public class PatientMapper {
     }
 
     public static AppointmentDTO toAppointmentDTO(Appointments appt) {
+        if (appt == null) return null;
         AppointmentDTO dto = new AppointmentDTO();
         dto.setId(appt.getId());
         dto.setAppointmentTime(appt.getAppointmentTime());
@@ -45,6 +51,7 @@ public class PatientMapper {
     }
 
     public static InsuranceDTO toInsuranceDTO(Insurance insurance) {
+        if (insurance == null) return null;
         InsuranceDTO dto = new InsuranceDTO();
         dto.setId(insurance.getId());
         dto.setPolicyNumber(insurance.getPolicyNumber());
@@ -53,4 +60,3 @@ public class PatientMapper {
         return dto;
     }
 }
-
