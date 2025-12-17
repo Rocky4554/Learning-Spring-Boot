@@ -33,3 +33,5 @@ build/
 .vscode/
 
 /telusko Spring series/
+
+application.properties
